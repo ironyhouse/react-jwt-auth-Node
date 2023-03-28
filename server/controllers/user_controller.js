@@ -5,7 +5,8 @@ class UserController {
     try {
       const { email, password } = req.body;
       const userData = await userService.registration(email, password);
-      res.cookies('refreshToken', userData.refreshToken, {
+      // return refresh token
+      res.cookie('refreshToken', userData.refreshToken, {
         // cookies lifetime - 30 days
         maxAge: 30 * 24 * 60 * 60 * 1000,
         // cookies cannot be changed
@@ -14,7 +15,7 @@ class UserController {
         // secure: true,
       });
 
-      return resp.json(userData);
+      return res.json(userData);
     } catch (e) {
       console.log(e);
     }

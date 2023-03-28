@@ -22,10 +22,11 @@ class UserService {
     // generate uuid
     const activationLink = uuid.v4();
     // create user to database
-    const user = await UserModel.create(
-      { email, password: hashPassword },
-      activationLink
-    );
+    const user = await UserModel.create({
+      email,
+      password: hashPassword,
+      activationLink,
+    });
 
     // send activation link to email
     await mailService.sendActivationMail(email, activationLink);
