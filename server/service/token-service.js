@@ -24,6 +24,24 @@ class TokenService {
     };
   }
 
+  async validateAccessToken(token) {
+    try {
+      const userData = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
+      return userData;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async validateRefreshToken() {
+    try {
+      const userData = jwt.verify(token, process.env.JWT_REFRESH_TOKEN_SECRET);
+      return userData;
+    } catch (e) {
+      return null;
+    }
+  }
+
   // save only one token per user
   async saveToken(userId, refreshToken) {
     // findOne - mongoDB method (return first element)
@@ -42,6 +60,11 @@ class TokenService {
 
   async removeToken(refreshToken) {
     const tokenData = await tokenModel.deleteOne({ refreshToken });
+    return tokenData;
+  }
+
+  async findToken(refreshToken) {
+    const tokenData = await tokenModel.findOne({ refreshToken });
     return tokenData;
   }
 }
