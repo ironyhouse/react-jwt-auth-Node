@@ -29,7 +29,7 @@ class UserService {
     });
 
     // send activation link to email
-    await mailService.sendActivationMail(email, activationLink);
+    await mailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
 
     // generate and update jwt tokens
     const userDto = new UserDto(user); // id, email, isActivated
