@@ -5,6 +5,7 @@ class UserController {
     try {
       const { email, password } = req.body;
       const userData = await userService.registration(email, password);
+
       // return refresh token
       res.cookie('refreshToken', userData.refreshToken, {
         // cookies lifetime - 30 days
@@ -33,7 +34,16 @@ class UserController {
 
   async activate(req, res, next) {
     try {
-    } catch (e) {}
+      // link - in route /activate/:link'
+      const activationLink = req.params.link;
+
+      await userService.activate(activationLink);
+
+      // redirect to home page using Express
+      return res.redirect(process.env.CLIENT_URL);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async refresh(req, res, next) {
@@ -43,7 +53,7 @@ class UserController {
 
   async gerUsers(req, res, next) {
     try {
-      res.json(['asd', 'asd']);
+      res.json([{ name: 'user1' }, { name: 'user2' }]);
     } catch (e) {}
   }
 }

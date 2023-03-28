@@ -14,6 +14,9 @@ class MailService {
   }
 
   async sendActivationMail(to, link) {
+    // message limit exceeded in free version of mongodb
+    // use console to get user activation link
+    console.log('Activation link: ' + link);
     await this.transporter.sendMail({
       from: process.env.SMTP_USER,
       to,

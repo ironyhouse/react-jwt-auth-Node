@@ -29,7 +29,10 @@ class UserService {
     });
 
     // send activation link to email
-    await mailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
+    await mailService.sendActivationMail(
+      email,
+      `${process.env.API_URL}/api/activate/${activationLink}`
+    );
 
     // generate and update jwt tokens
     const userDto = new UserDto(user); // id, email, isActivated
@@ -40,6 +43,19 @@ class UserService {
       ...tokens,
       user: userDto,
     };
+  }
+
+  async activate(activationLink) {
+    const user = await UserModel.findOne({ activationLink });
+
+    if (!user) {
+      throw new Error('Invalid activation link.');
+    }
+
+    user.isActivated = true;
+
+    // update user in database
+    await user.save();
   }
 }
 
