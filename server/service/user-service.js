@@ -15,7 +15,9 @@ class UserService {
 
     // if the user already exists
     if (candidate) {
-      throw ApiError.BadRequest(`User with "${candidate.email}" email address already exists.`);
+      throw ApiError.BadRequest(
+        `User with "${candidate.email}" email address already exists.`
+      );
     }
 
     // hash password before saving in database
@@ -57,6 +59,32 @@ class UserService {
 
     // update user in database
     await user.save();
+  }
+
+  async login(email, password) {
+    const user = await UserModel.findOne({ email });
+
+    // if the user does not exist
+    if (!user) {
+      throw ApiError.BadRequest('Invalid login.');
+    }
+
+    const isPassEquals = await bcrypt.compare(password, user.password);
+
+    // if invalid password
+    if (!isPassEquals) {
+      throw ApiError.BadRequest('Invalid password.');
+    }
+
+    // generate and update jwt tokens
+    const userDto = new UserDto(user);
+    const tokens = tokenService.generateTokens({ ...userDto });
+    await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+    return {
+      ...tokens,
+      user: userDto,
+    };
   }
 }
 
