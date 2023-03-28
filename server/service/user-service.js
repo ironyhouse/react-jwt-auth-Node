@@ -5,6 +5,7 @@ const uuid = require('uuid');
 const mailService = require('./mail-service');
 const tokenService = require('./token-service');
 const UserDto = require('../dtos/user-dto');
+const ApiError = require('../exceptions/api-error');
 
 class UserService {
   async registration(email, password) {
@@ -14,7 +15,7 @@ class UserService {
 
     // if the user already exists
     if (candidate) {
-      throw new Error(`User with ${candidate} email address already exists.`);
+      throw ApiError.BadRequest(`User with "${candidate.email}" email address already exists.`);
     }
 
     // hash password before saving in database
@@ -49,7 +50,7 @@ class UserService {
     const user = await UserModel.findOne({ activationLink });
 
     if (!user) {
-      throw new Error('Invalid activation link.');
+      throw ApiError.BadRequest('Invalid activation link.');
     }
 
     user.isActivated = true;

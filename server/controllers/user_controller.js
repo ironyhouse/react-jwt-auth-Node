@@ -1,8 +1,19 @@
 const userService = require('../service/user-service');
+const { validationResult } = require('express-validator');
+const ApiError = require('../exceptions/api-error');
 
 class UserController {
   async registration(req, res, next) {
+    console.log(req, res, next)
     try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        return next(
+          ApiError.BadRequest('User validation error', errors.array())
+        );
+      }
+
       const { email, password } = req.body;
       const userData = await userService.registration(email, password);
 
@@ -18,18 +29,22 @@ class UserController {
 
       return res.json(userData);
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   }
 
   async login(req, res, next) {
     try {
-    } catch (e) {}
+    } catch (e) {
+      next(e);
+    }
   }
 
   async logout(req, res, next) {
     try {
-    } catch (e) {}
+    } catch (e) {
+      next(e);
+    }
   }
 
   async activate(req, res, next) {
@@ -42,19 +57,23 @@ class UserController {
       // redirect to home page using Express
       return res.redirect(process.env.CLIENT_URL);
     } catch (e) {
-      console.log(e);
+      next(e);
     }
   }
 
   async refresh(req, res, next) {
     try {
-    } catch (e) {}
+    } catch (e) {
+      next(e);
+    }
   }
 
   async gerUsers(req, res, next) {
     try {
       res.json([{ name: 'user1' }, { name: 'user2' }]);
-    } catch (e) {}
+    } catch (e) {
+      next(e);
+    }
   }
 }
 
