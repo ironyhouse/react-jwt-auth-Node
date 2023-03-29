@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import $api from '../http';
 import { AuthResponse } from '../models/response/AuthResponse';
+import { IUser } from '../models/IUser';
 
 // AuthResponse -> .then((response) => response.data)
 export default class AuthService {

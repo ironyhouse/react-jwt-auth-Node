@@ -4,11 +4,13 @@ import AuthService from '../services/AuthService';
 import axios from 'axios';
 import { AuthResponse } from '../models/response/AuthResponse';
 import { API_ARL } from '../http';
+import UserService from '../services/UserService';
 
 export default class Store {
   user = {} as IUser;
   isAuth = false;
   isLoading = false;
+  users: IUser[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -20,6 +22,10 @@ export default class Store {
 
   setUser(user: IUser) {
     this.user = user;
+  }
+
+  setUsers(users: IUser[]) {
+    this.users = users;
   }
 
   setLoading(bool: boolean) {
@@ -75,6 +81,19 @@ export default class Store {
       localStorage.setItem('token', response.data.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
+    } catch (e: any) {
+      console.error(e.response?.data?.message);
+    } finally {
+      this.setLoading(false);
+    }
+  }
+
+  async getUsers() {
+    try {
+      // response without access token
+      const response = await UserService.fetchUsers();
+
+      this.setUsers(response.data);
     } catch (e: any) {
       console.error(e.response?.data?.message);
     } finally {
