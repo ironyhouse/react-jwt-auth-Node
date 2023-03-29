@@ -14,7 +14,13 @@ const app = express();
 // add middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+// CORS: allowed sites
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.CLIENT_URL,
+  })
+);
 app.use('/api', router);
 // should connect last
 app.use(errorMiddleware);
