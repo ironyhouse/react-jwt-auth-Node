@@ -4,7 +4,6 @@ const ApiError = require('../exceptions/api-error');
 
 class UserController {
   async registration(req, res, next) {
-    console.log(req, res, next);
     try {
       const errors = validationResult(req);
 
@@ -97,7 +96,8 @@ class UserController {
 
   async gerUsers(req, res, next) {
     try {
-      res.json([{ name: 'user1' }, { name: 'user2' }]);
+      const users = await userService.getAllUsers();
+      return res.json(users);
     } catch (e) {
       next(e);
     }
